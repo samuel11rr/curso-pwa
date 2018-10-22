@@ -58,7 +58,7 @@ function guarda(persona){
 }
 
 fetch('https://swapi.co/api/people/1/')
-  .then( resp => resp.json())
-  .then( guarda )
-  .then( resp => resp.json() )
-  .then( console.log );
+  .then( resp => resp.json()) //ejecuta el fetch y parsea los datos
+  .then( guarda ) // manda los datos a la funcion guarda
+  .then( resp => resp.json() ) // parsea la respuesta del guardado
+  .then( console.log ); // muestra los datos del guardado
