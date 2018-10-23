@@ -1,33 +1,26 @@
-self.addEventListener('fetch', event => {
+self.addEventListener( 'install', e => {
 
-  // const offlineResp = new Response(`
-  //       Bienvenido, necesitas internet.
-  //     `);
+  const cacheProm = caches.open('cache-1').then( cache => {
 
-  // const offlineResp = new Response(`
-  //   <!DOCTYPE html>
-  //   <html lang="en">
-  //   <head>
-  //       <meta charset="UTF-8">
-  //       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  //       <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  //       <title>Mi PWA offline</title>
-  //
-  //   </head>
-  //   <body class="container p-3">
-  //     <h1>Modo offline</h1>
-  //   </body>
-  //   </html>
-  //     `, {
-  //       headers: {
-  //         'Content-Type': 'text/html'
-  //       }
-  //     });
+    // APP SELL
+    return cache.addAll([
+      '/',
+      '/index.html',
+      '/css/style.css',
+      '/img/main.jpg',
+      'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
+      '/js/app.js'
+    ]);
 
-  const offlineResp = fetch('pages/offline.html');
+  });
 
-  const resp = fetch( event.request )
-                  .catch( () => offlineResp);
+  e.waitUntil( cacheProm );
 
-  event.respondWith( resp );
+  self.addEventListener('fetch', e => {
+
+    // ESTRATEGIA 1: CACHE ONLY
+    e.respondWith( caches.match( e.request ) );
+
+  });
+
 });
