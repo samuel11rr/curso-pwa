@@ -73,26 +73,45 @@ self.addEventListener( 'install', e => {
     // e.respondWith( respuesta );
 
 
-    // ESTRATEGIA 3: NETWORK WITH CACHE FALLBACK
-    const respuesta = fetch( e.request ).then( res => {
+    // // ESTRATEGIA 3: NETWORK WITH CACHE FALLBACK
+    // const respuesta = fetch( e.request ).then( res => {
+    //
+    //     // si no se encuentra en web (404) buscamos en cache si está guardado
+    //     if( !res ) return caches.match( e.request );
+    //
+    //     caches.open( CACHE_DYNAMIC_NAME )
+    //           .then( cache => {
+    //               cache.put(e.request, res);
+    //               limpiarCache( CACHE_DYNAMIC_NAME, CACHE_DYNAMIC_LIMIT );
+    //           });
+    //
+    //     return res.clone();
+    //
+    // }).catch( err => {
+    //     return caches.match( e.request );
+    // });
+    //
+    // e.respondWith( respuesta );
 
-        // si no se encuentra en web (404) buscamos en cache si está guardado
-        if( !res ) return caches.match( e.request );
 
-        caches.open( CACHE_DYNAMIC_NAME )
-              .then( cache => {
-                  cache.put(e.request, res);
-                  limpiarCache( CACHE_DYNAMIC_NAME, CACHE_DYNAMIC_LIMIT );
-              });
+    // ESTRATEGIA 4: CACHE WITH NETWORK UPDATE
+    /*  buscará en la web los archivos mas recientes,
+        pero mostrará al usuario lo que antes ya estaba en el caché,
+        al mismo tiempo, en el background va a sustituir los archivos viejos por los nuevos
+        para que cuando el usuario vuelva a entrar se le muestren los nuevos    */
 
-        return res.clone();
+    // excluimos bootstrap
+    if ( e.request.url.includes('bootstrap') ) return e.respondWith( caches.match( e.request ) );
 
-    }).catch( err => {
-        return caches.match( e.request );
+    const respuesta = caches.open( CACHE_STATIC_NAME ).then( cache => {
+
+        fetch( e.request ).then( newRes => cache.put( e.request, newRes ));
+
+        return cache.match( e.request );
+
     });
 
     e.respondWith( respuesta );
-
 
   });
 
