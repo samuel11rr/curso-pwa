@@ -27,16 +27,16 @@ let mensaje = {
 
 // 3- Leer todos los mensajes offline
   // db.allDocs({include_docs: true, descending: true})
-  //   .then( doc => {
-  //     console.log(doc.rows);
+  //   .then( docs => {
+  //     console.log(docs.rows);
   //   });
 
 
 // 4- Cambiar el valor 'sincronizado' de todos los objetos
 //  en la BD a TRUE
 // db.allDocs({include_docs: true, descending: true})
-//   .then( doc => {
-//     doc.rows.forEach( row => {
+//   .then( docs => {
+//     docs.rows.forEach( row => {
 //       let doc = row.doc;
 //
 //       doc.sincronizado = true;
@@ -52,14 +52,15 @@ let mensaje = {
 // deberá de comentar todo el código que actualiza
 // el campo de la sincronización
 
-db.allDocs({ include_docs: true }).then( docs => {
-  docs.rows.forEach( row => {
-    let doc = row.doc;
+db.allDocs({ include_docs: true })
+  .then( docs => {
+    docs.rows.forEach( row => {
+      let doc = row.doc;
 
-    if (doc.sincronizado) {
-      let id = doc._id;
-      db.remove( doc );
-      console.log('eliminado', id);
-    }
-  });
+      if (doc.sincronizado) {
+        let id = doc._id;
+        db.remove( doc );
+        console.log('eliminado', id);
+      }
+    });
 });
