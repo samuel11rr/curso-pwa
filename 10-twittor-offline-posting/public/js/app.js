@@ -54,7 +54,7 @@ function crearMensajeHTML(mensaje, personaje) {
                 <br/>
                 ${ mensaje }
             </div>
-            
+
             <div class="arrow"></div>
         </div>
     </li>
@@ -83,7 +83,7 @@ function logIn( ingreso ) {
         avatarSel.removeClass('oculto');
 
         titulo.text('Seleccione Personaje');
-    
+
     }
 
 }
@@ -111,7 +111,7 @@ salirBtn.on('click', function() {
 nuevoBtn.on('click', function() {
 
     modal.removeClass('oculto');
-    modal.animate({ 
+    modal.animate({
         marginTop: '-=1000px',
         opacity: 1
     }, 200 );
@@ -121,7 +121,7 @@ nuevoBtn.on('click', function() {
 // Boton de cancelar mensaje
 cancelarBtn.on('click', function() {
     if ( !modal.hasClass('oculto') ) {
-        modal.animate({ 
+        modal.animate({
             marginTop: '+=1000px',
             opacity: 0
          }, 200, function() {
@@ -143,3 +143,20 @@ postBtn.on('click', function() {
     crearMensajeHTML( mensaje, usuario );
 
 });
+
+
+
+// OBTENER MENSAJES DEL SERVIDOR
+function getMensajes(){
+  fetch('api')
+  .then( res => res.json() )
+  .then( posts => {
+    console.log(posts);
+
+    posts.forEach( post => {
+      crearMensajeHTML( post.mensaje, post.user );
+    });
+  });
+};
+
+getMensajes()

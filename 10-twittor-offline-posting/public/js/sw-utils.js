@@ -9,7 +9,7 @@ function actualizaCacheDinamico( dynamicCache, req, res ) {
         return caches.open( dynamicCache ).then( cache => {
 
             cache.put( req, res.clone() );
-            
+
             return res.clone();
 
         });
@@ -40,3 +40,18 @@ function actualizaCacheStatico( staticCache, req, APP_SHELL_INMUTABLE ) {
 
 }
 
+
+// NETWORK WITH CACHE FALLBACK / UPDATE
+function manejoApiMensajes( cacheName, req ){
+  return fetch( req ).then( res => {
+    if ( res.ok ) {
+      actualizaCacheDinamico( cacheName, req, res.clone() );
+
+      return res.clone();
+    } else{
+      return caches.match( req );
+    }
+  }).catch( err => {
+    return caches.match( req );
+  });
+}
