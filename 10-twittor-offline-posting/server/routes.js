@@ -8,21 +8,6 @@ const mensajes = [
     _id: 'XXX',
     user: 'spiderman',
     mensaje: 'Hola mundo'
-  },
-  {
-    _id: 'XXX',
-    user: 'ironman',
-    mensaje: 'Hola mundo'
-  },
-  {
-    _id: 'XXX',
-    user: 'hulk',
-    mensaje: 'Hola mundo'
-  },
-  {
-    _id: 'XXX',
-    user: 'wolverine',
-    mensaje: 'Hola mundo'
   }
 ];
 
@@ -33,6 +18,25 @@ const mensajes = [
 router.get('/', function (req, res) {
   // res.json('Obteniendo mensajes');
   res.json( mensajes );
+});
+
+
+// Post mensajes
+router.post('/', function (req, res) {
+
+  const mensaje = {
+    mensaje: req.body.mensaje,
+    user: req.body.user
+  }
+
+  console.log(mensajes);
+
+  mensajes.push( mensaje );
+
+  res.json({
+    ok: true,
+    mensaje
+  });
 });
 
 

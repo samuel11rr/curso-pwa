@@ -43,15 +43,23 @@ function actualizaCacheStatico( staticCache, req, APP_SHELL_INMUTABLE ) {
 
 // NETWORK WITH CACHE FALLBACK / UPDATE
 function manejoApiMensajes( cacheName, req ){
-  return fetch( req ).then( res => {
-    if ( res.ok ) {
-      actualizaCacheDinamico( cacheName, req, res.clone() );
 
-      return res.clone();
-    } else{
-      return caches.match( req );
-    }
-  }).catch( err => {
-    return caches.match( req );
-  });
+  if ( req.clone().method === 'POST' ) {
+    // POSTEO DE UN NUEVO MENSAJE
+    return fetch( req );
+
+
+  }else{
+      return fetch( req ).then( res => {
+        if ( res.ok ) {
+          actualizaCacheDinamico( cacheName, req, res.clone() );
+
+          return res.clone();
+        } else{
+          return caches.match( req );
+        }
+      }).catch( err => {
+        return caches.match( req );
+      });
+  }
 }
