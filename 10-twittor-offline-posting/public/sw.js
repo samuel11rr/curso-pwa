@@ -1,4 +1,6 @@
 // imports
+importScripts('https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js');
+importScripts('js/sw-db.js');
 importScripts('js/sw-utils.js');
 
 
@@ -18,7 +20,9 @@ const APP_SHELL = [
     'img/avatars/thor.jpg',
     'img/avatars/wolverine.jpg',
     'js/app.js',
-    'js/sw-utils.js'
+    'js/sw-utils.js',
+    'js/libs/plugins/mdtoast.min.js',
+    'js/libs/plugins/mdtoast.min.css'
 ];
 
 const APP_SHELL_INMUTABLE = [
@@ -26,7 +30,8 @@ const APP_SHELL_INMUTABLE = [
     'https://fonts.googleapis.com/css?family=Lato:400,300',
     'https://use.fontawesome.com/releases/v5.3.1/css/all.css',
     'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'
+    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js',
+    'https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js'
 ];
 
 
@@ -79,6 +84,7 @@ self.addEventListener( 'fetch', e => {
 
   if ( e.request.url.includes('/api') ) {
 
+    // return respuesta?
     respuesta = manejoApiMensajes( DYNAMIC_CACHE, e.request );
 
 
@@ -106,4 +112,22 @@ self.addEventListener( 'fetch', e => {
 
     e.respondWith( respuesta );
 
+});
+
+
+
+// TAREAS ASINCRONAS
+self.addEventListener('sync', e => {
+
+    console.log('SW: Sync');
+
+    if ( e.tag === 'nuevo-post' ) {
+
+        // postear a DB cuando hay conexion
+
+        const respuesta = postearMensajes();
+
+        e.waitUntil( respuesta );
+
+    }
 });

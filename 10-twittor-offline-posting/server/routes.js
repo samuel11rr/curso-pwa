@@ -21,7 +21,7 @@ router.get('/', function (req, res) {
 });
 
 
-// Post mensajes
+// Post mensaje
 router.post('/', function (req, res) {
 
   const mensaje = {
@@ -29,9 +29,9 @@ router.post('/', function (req, res) {
     user: req.body.user
   }
 
-  console.log(mensajes);
-
   mensajes.push( mensaje );
+
+  console.log(mensajes);
 
   res.json({
     ok: true,

@@ -46,8 +46,19 @@ function manejoApiMensajes( cacheName, req ){
 
   if ( req.clone().method === 'POST' ) {
     // POSTEO DE UN NUEVO MENSAJE
-    return fetch( req );
 
+    // evaluamos si el navegador puede usar background sync
+    if ( self.registration.sync ) {
+        return req.clone().text().then( body => {
+          // console.log(body);
+          const bodyObj = JSON.parse( body );
+          // guardar en indexdb
+          return guardarMensaje( bodyObj );
+        });
+    } else {
+      // si el navegador no dispone de background sync dejamos pasar el fetch
+      return fetch( req );
+    }
 
   }else{
       return fetch( req ).then( res => {
