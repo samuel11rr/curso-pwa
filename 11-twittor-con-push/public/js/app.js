@@ -57,7 +57,7 @@ function crearMensajeHTML(mensaje, personaje) {
                 <br/>
                 ${ mensaje }
             </div>
-            
+
             <div class="arrow"></div>
         </div>
     </li>
@@ -86,7 +86,7 @@ function logIn( ingreso ) {
         avatarSel.removeClass('oculto');
 
         titulo.text('Seleccione Personaje');
-    
+
     }
 
 }
@@ -114,7 +114,7 @@ salirBtn.on('click', function() {
 nuevoBtn.on('click', function() {
 
     modal.removeClass('oculto');
-    modal.animate({ 
+    modal.animate({
         marginTop: '-=1000px',
         opacity: 1
     }, 200 );
@@ -125,7 +125,7 @@ nuevoBtn.on('click', function() {
 // Boton de cancelar mensaje
 cancelarBtn.on('click', function() {
     if ( !modal.hasClass('oculto') ) {
-        modal.animate({ 
+        modal.animate({
             marginTop: '+=1000px',
             opacity: 0
          }, 200, function() {
@@ -219,3 +219,66 @@ window.addEventListener('offline', isOnline );
 
 isOnline();
 
+
+
+// NOTIFICACIONES
+function verificaSuscripcion( activadas ){
+
+    if ( activadas ) {
+        btnActivadas.removeClass('oculto');
+        btnDesactivadas.addClass('oculto');
+    } else {
+      btnActivadas.addClass('oculto');
+      btnDesactivadas.removeClass('oculto');
+    }
+
+}
+
+verificaSuscripcion();
+
+
+function enviarNotificacion(){
+
+    const notificationOpts = {
+      body: 'este es el cuerpo de la notificacion',
+      icon: 'img/icons/icon-72x72.png'
+    }
+
+    const n = new Notification('Hola mundo', notificationOpts);
+
+    n.onclick = () => {
+      console.log('click');
+    };
+
+}
+
+function notificarme(){
+
+    if ( !window.Notification ) {
+        console.log('No soporta notificaciones');
+        return;
+    }
+
+    if ( Notification.permission === 'granted' ) {
+
+        // new Notification('Hola Mundo - granted');
+        enviarNotificacion();
+
+    } else if( Notification.permission === 'denied' || Notification.permission === 'default' ){
+
+        Notification.requestPermission( function( permission ) {
+
+            console.log(permission);
+
+            if ( permission === 'granted' ) {
+
+                // new Notification('Hola Mundo - pregunta');
+                enviarNotificacion();
+
+            }
+        });
+    }
+
+}
+
+// notificarme();
