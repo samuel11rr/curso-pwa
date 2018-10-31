@@ -1,7 +1,7 @@
 // Routes.js - Módulo de rutas
-var express = require('express');
-var router = express.Router();
-
+const express = require('express');
+const router = express.Router();
+const push = require('./push');
 
 const mensajes = [
 
@@ -49,7 +49,10 @@ router.post('/subscribe', (req, res) => {
 
 // OBTENER KEY PUBLICO
 router.get('/key', (req, res) => {
-  res.json('key publico');
+
+  const key = push.getKey();
+
+  res.send(key);
 });
 
 // ENVIAR NOTIFICACION PUSH A QUIEN YO QUIERA
