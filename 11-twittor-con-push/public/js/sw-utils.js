@@ -9,7 +9,7 @@ function actualizaCacheDinamico( dynamicCache, req, res ) {
         return caches.open( dynamicCache ).then( cache => {
 
             cache.put( req, res.clone() );
-            
+
             return res.clone();
 
         });
@@ -43,17 +43,20 @@ function actualizaCacheStatico( staticCache, req, APP_SHELL_INMUTABLE ) {
 // Network with cache fallback / update
 function manejoApiMensajes( cacheName, req ) {
 
+    if ( req.url.indexOf('/api/key') >= 0 || req.url.indexOf('/api/subscribe') >= 0 ) {
 
-    if ( req.clone().method === 'POST' ) {
+        return fetch( req );
+
+    } else if ( req.clone().method === 'POST' ) {
         // POSTEO de un nuevo mensaje
 
         if ( self.registration.sync ) {
             return req.clone().text().then( body =>{
-    
+
                 // console.log(body);
                 const bodyObj = JSON.parse( body );
                 return guardarMensaje( bodyObj );
-    
+
             });
         } else {
             return fetch( req );
@@ -63,14 +66,14 @@ function manejoApiMensajes( cacheName, req ) {
     } else {
 
         return fetch( req ).then( res => {
-    
+
             if ( res.ok ) {
                 actualizaCacheDinamico( cacheName, req, res.clone() );
                 return res.clone();
             } else {
                 return caches.match( req );
             }
-      
+
         }).catch( err => {
             return caches.match( req );
         });
@@ -79,4 +82,3 @@ function manejoApiMensajes( cacheName, req ) {
 
 
 }
-

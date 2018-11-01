@@ -44,7 +44,12 @@ router.post('/', function (req, res) {
 
 // ALMACENAR SUSCRIPCION
 router.post('/subscribe', (req, res) => {
-  res.json('subscribe');
+
+    const suscripcion = req.body;
+
+    push.addSubscription( suscripcion );
+
+    res.json('subscribe');
 });
 
 // OBTENER KEY PUBLICO
