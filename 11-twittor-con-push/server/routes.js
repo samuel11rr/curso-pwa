@@ -1,7 +1,7 @@
 // Routes.js - Módulo de rutas
 const express = require('express');
 const router = express.Router();
-const push = require('./push');
+const push = require('./push.js');
 
 const mensajes = [
 
