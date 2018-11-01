@@ -52,6 +52,8 @@ router.post('/subscribe', (req, res) => {
     res.json('subscribe');
 });
 
+
+
 // OBTENER KEY PUBLICO
 router.get('/key', (req, res) => {
 
@@ -60,10 +62,23 @@ router.get('/key', (req, res) => {
   res.send(key);
 });
 
+
+
+
 // ENVIAR NOTIFICACION PUSH A QUIEN YO QUIERA
 // es algo que se controla de lado del server
 router.post('/push', (req, res) => {
-  res.json('notificacion push');
+
+    const post = {
+      titulo: req.body.titulo,
+      cuerpo: req.body.cuerpo,
+      usuario: req.body.usuario
+    };
+
+    push.sendPush( post );
+
+    res.json( post );
+
 });
 
 

@@ -232,7 +232,7 @@ isOnline();
 // NOTIFICACIONES
 function verificaSuscripcion( activadas ){
 
-    console.log( activadas );
+    // console.log( activadas );
 
     if ( activadas ) {
         btnActivadas.removeClass('oculto');
@@ -330,9 +330,27 @@ btnDesactivadas.on('click', function(){
               body: JSON.stringify( suscripcion )
             })
             .then( verificaSuscripcion )
-            .catch( console.log );
+            .catch( cancelarSuscripcion );
         });
 
     });
 
 });
+
+
+
+function cancelarSuscripcion(){
+
+    // obtenemos suscripcion actual
+    swReg.pushManager.getSubscription().then( subs => {
+
+        // al tener la suscripcion mandamos el falso a la suscripcion
+        subs.unsubscribe().then( () => verificaSuscripcion( false ) );
+
+    });
+}
+
+
+btnActivadas.on('click', function() {
+    cancelarSuscripcion();
+})

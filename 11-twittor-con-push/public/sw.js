@@ -40,10 +40,10 @@ const APP_SHELL_INMUTABLE = [
 self.addEventListener('install', e => {
 
 
-    const cacheStatic = caches.open( STATIC_CACHE ).then(cache => 
+    const cacheStatic = caches.open( STATIC_CACHE ).then(cache =>
         cache.addAll( APP_SHELL ));
 
-    const cacheInmutable = caches.open( INMUTABLE_CACHE ).then(cache => 
+    const cacheInmutable = caches.open( INMUTABLE_CACHE ).then(cache =>
         cache.addAll( APP_SHELL_INMUTABLE ));
 
 
@@ -93,20 +93,20 @@ self.addEventListener( 'fetch', e => {
         respuesta = caches.match( e.request ).then( res => {
 
             if ( res ) {
-                
+
                 actualizaCacheStatico( STATIC_CACHE, e.request, APP_SHELL_INMUTABLE );
                 return res;
-                
+
             } else {
-    
+
                 return fetch( e.request ).then( newRes => {
-    
+
                     return actualizaCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
-    
+
                 });
-    
+
             }
-    
+
         });
 
     }
@@ -125,10 +125,84 @@ self.addEventListener('sync', e => {
 
         // postear a BD cuando hay conexión
         const respuesta = postearMensajes();
-        
+
         e.waitUntil( respuesta );
     }
+});
 
 
+
+// ESCUCHAR PUSH NOTIFICATIONS
+self.addEventListener('push', e => {
+  // console.log(e);
+  const data = JSON.parse( e.data.text() );
+
+  const title = data.titulo;
+  const options = {
+    body: data.cuerpo,
+    icon: `img/avatars/${ data.usuario }.jpg`,
+    badge: 'img/favicon.ico',
+    image: 'https://cde.laprensa.e3.pe/ima/0/0/1/7/5/175423.jpg',
+    vibrate: [500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500],
+    openUrl: '/',
+    data: {
+      url: '/',
+      id: data.usuario
+    },
+    actions: [
+      {
+        action: 'thor-action',
+        title: 'Thor',
+        icon: 'img/avatar/thor.jpg'
+      },
+      {
+        action: 'ironman-action',
+        title: 'Ironman',
+        icon: 'img/avatar/ironman.jpg'
+      },
+      {
+        action: 'spiderman-action',
+        title: 'Spiderman',
+        icon: 'img/avatar/spiderman.jpg'
+      }
+    ]
+  };
+
+  e.waitUntil( self.registration.showNotification( title, options ) );
+
+});
+
+
+// cierra notificacion
+self.addEventListener('notificationclose', e => {
+  console.log('notification cerrada', e);
+});
+
+
+// click en la notificacion
+self.addEventListener('notificationclick', e => {
+
+    const notificacion = e.notification;
+    const accion = e.action;
+
+    console.log({notificacion, accion});
+
+    const respuesta = clients.matchAll()
+    .then(clientes => {
+
+        let cliente = clientes.find( c => {
+            return c.visibilityState === 'visible';
+        });
+
+        if ( cliente !== undefined ) {
+          cliente.navigate( notificacion.data.url );
+          cliente.focus();
+        } else {
+          clients.openWindow( notificacion.data.url );
+        }
+        return notificacion.close();
+    });
+
+    e.waitUntil( respuesta );
 
 });
