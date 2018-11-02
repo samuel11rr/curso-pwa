@@ -542,10 +542,10 @@ timeline.on('click', 'li', function() {
     // console.log( $(this) );
 
     let tipo    = $(this).data('tipo');
-    let lat     = $(this).data('tipo');
-    let lng     = $(this).data('tipo');
-    let mensaje = $(this).data('tipo');
-    let user    = $(this).data('tipo');
+    let lat     = $(this).data('lat');
+    let lng     = $(this).data('lng');
+    let mensaje = $(this).data('mensaje');
+    let user    = $(this).data('user');
 
     console.log({ tipo, lat, lng, mensaje, user });
 
