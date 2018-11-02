@@ -76,6 +76,8 @@ var foto = null;
 // El usuario, contiene el ID del héroe seleccionado
 var usuario;
 
+// INICIO DE LA CLASS CAMARA
+const camara = new Camara( $('#player')[0] );
 
 
 // ===== Codigo de la aplicación
@@ -99,12 +101,12 @@ function crearMensajeHTML(mensaje, personaje, lat, lng, foto) {
                 ${ mensaje }
                 `;
 
-    // if ( foto ) {
-    //     content += `
-    //             <br>
-    //             <img class="foto-mensaje" src="${ foto }">
-    //     `;
-    // }
+    if ( foto ) {
+        content += `
+                <br>
+                <img class="foto-mensaje" src="${ foto }">
+        `;
+    }
 
     content += `</div>
                 <div class="arrow"></div>
@@ -244,7 +246,8 @@ postBtn.on('click', function() {
         mensaje: mensaje,
         user: usuario,
         lat: lat,
-        lng: lng
+        lng: lng,
+        foto: foto
     };
 
 
@@ -262,7 +265,7 @@ postBtn.on('click', function() {
     // camera.apagar();
     // contenedorCamara.addClass('oculto');
 
-    crearMensajeHTML( mensaje, usuario, lat, lng );
+    crearMensajeHTML( mensaje, usuario, lat, lng, foto );
 
     foto = null;
 });
@@ -506,6 +509,10 @@ btnLocation.on('click', () => {
 btnPhoto.on('click', () => {
 
     console.log('Inicializar camara');
+    contenedorCamara.removeClass('oculto');
+
+    camara.encender();
+
 });
 
 
@@ -513,6 +520,10 @@ btnPhoto.on('click', () => {
 btnTomarFoto.on('click', () => {
 
     console.log('Botón tomar foto');
+
+    foto = camara.tomarFoto();
+
+    camara.apagar();
 
 });
 
